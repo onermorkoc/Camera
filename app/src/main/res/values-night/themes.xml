@@ -1,0 +1,11 @@
+<resources>
+    <style name="Theme.CameraApp" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+
+        <item name="windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
+        <item name="android:navigationBarColor">@color/black</item>
+        <item name="android:statusBarColor">@color/black</item>
+        <item name="android:windowLightStatusBar">false</item>
+
+    </style>
+</resources>
