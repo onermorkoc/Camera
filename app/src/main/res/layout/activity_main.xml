@@ -63,13 +63,4 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/flash_off" />
 
-    <Button
-        android:id="@+id/button"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:backgroundTint="#FF0000"
-        android:text="Button"
-        app:layout_constraintStart_toEndOf="@+id/changeCamera_btn_id"
-        app:layout_constraintTop_toTopOf="@+id/changeCamera_btn_id" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>

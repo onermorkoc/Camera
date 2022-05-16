@@ -4,5 +4,6 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="tabCizgiRenk">#3884F8</color>
+    <color name="yesil_icon_fix">#00FFFFFF</color>
 
 </resources>

@@ -18,8 +18,15 @@ class camera : Fragment() {
 
     private var imageCapture: ImageCapture?=null
     private lateinit var outputDirectory : File
-    private var flashSayi : Int?=null
-    private var kameraSayi : Int?=null
+    private lateinit var cameraSelector : CameraSelector
+    private var flashSayi = 0
+    private var kameraSayi = 0
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        outputDirectory = getOutputDirectory()
+        imageCapture = ImageCapture.Builder().build()
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.camera, container, false)
@@ -28,21 +35,22 @@ class camera : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if (ContextCompat.checkSelfPermission(requireContext(), android.Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED)
-            requestPermissions(arrayOf(android.Manifest.permission.CAMERA,android.Manifest.permission.RECORD_AUDIO), 1) //izin yoksa izin al
-        else
+        if (ContextCompat.checkSelfPermission(requireContext(), android.Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED) {
+            requestPermissions(
+                arrayOf(
+                    android.Manifest.permission.CAMERA,
+                    android.Manifest.permission.RECORD_AUDIO,
+                    android.Manifest.permission.READ_EXTERNAL_STORAGE,
+                    android.Manifest.permission.WRITE_EXTERNAL_STORAGE), 1) //izin yoksa izin al
+        }else{
             cameraBaslat()
-
-        outputDirectory = getOutputDirectory()
-
-        requireActivity().takephoto_btn_id.setOnClickListener {
-            fotocek()
         }
-
-        flashOnOff_btn()
-        cameraFrontBack_btn()
+        fotocek()
+        kameraDegistir()
+        flashAcKapat()
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == 1){
@@ -55,6 +63,7 @@ class camera : Fragment() {
     }
 
     fun getOutputDirectory(): File {
+
         val mediaDir =requireActivity().externalMediaDirs.firstOrNull()?.apply {
             mkdirs()
         }
@@ -64,35 +73,37 @@ class camera : Fragment() {
 
     fun fotocek(){
 
-        val imageCapture = imageCapture ?: return
-        val photofile = File(outputDirectory,
-            SimpleDateFormat("yy-MM-dd-HH-mm-ss-SSS", Locale.getDefault()).format(System.currentTimeMillis()) + ".jpg")
-        val outputOption =ImageCapture.OutputFileOptions.Builder(photofile).build()
+        requireActivity().takephoto_btn_id.setOnClickListener {
 
-        imageCapture.takePicture(outputOption, ContextCompat.getMainExecutor(requireContext()),
-            object : ImageCapture.OnImageSavedCallback{
-                override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
-                    Toast.makeText(requireContext(),"Kaydedildi", Toast.LENGTH_SHORT).show()
+            val photofile = File(outputDirectory, SimpleDateFormat("yy-MM-dd-HH-mm-ss-SSS", Locale.getDefault()).format(System.currentTimeMillis()) + ".jpg")
+            val outputOption =ImageCapture.OutputFileOptions.Builder(photofile).build()
+
+            imageCapture!!.takePicture(outputOption, ContextCompat.getMainExecutor(requireContext()),
+                object : ImageCapture.OnImageSavedCallback{
+                    override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
+                        Toast.makeText(requireContext(),"Kaydedildi", Toast.LENGTH_SHORT).show()
+                    }
+                    override fun onError(exception: ImageCaptureException) {
+
+                    }
                 }
-
-                override fun onError(exception: ImageCaptureException) {
-
-                }
-            }
-        )
+            )
+        }
     }
 
     fun cameraBaslat() {
+
         val processCameraProvider = ProcessCameraProvider.getInstance(requireContext())
-        processCameraProvider.addListener(
-            {
-            var cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
-            val kameraSayi = kameraSayi!! % 2
-            if (kameraSayi == 1) {
+        processCameraProvider.addListener({
+
+            if (kameraSayi % 2 == 0){
+                cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
+            }else{
                 cameraSelector = CameraSelector.DEFAULT_FRONT_CAMERA
             }
+
             val cameraProvider: ProcessCameraProvider = processCameraProvider.get()
-                imageCapture = ImageCapture.Builder().build()
+
             val preView = Preview.Builder().build().also {
                 if (cameraView!=null)
                     it.setSurfaceProvider(cameraView.surfaceProvider)
@@ -100,32 +111,31 @@ class camera : Fragment() {
             try {
                 cameraProvider.unbindAll()
                 val abc = cameraProvider.bindToLifecycle(this,cameraSelector,imageCapture,preView)
-                val flashSayi= flashSayi!! % 2
-                if (flashSayi == 1) {
+
+                if (flashSayi % 2 == 0) {
+                    requireActivity().flash_btn_id.setImageResource(R.drawable.flash_off)
+                } else {
                     abc.cameraControl.enableTorch(true)
                     requireActivity().flash_btn_id.setImageResource(R.drawable.flash_on)
-                }else {
-                    requireActivity().flash_btn_id.setImageResource(R.drawable.flash_off)
                 }
 
             }catch (e : Exception){
 
             }
-            }, ContextCompat.getMainExecutor(requireContext()))
+            }, ContextCompat.getMainExecutor(requireContext())
+        )
     }
 
-    fun flashOnOff_btn(){
-        flashSayi = 2
+    fun flashAcKapat(){
         requireActivity().flash_btn_id.setOnClickListener {
-            flashSayi = flashSayi!! + 1
+            flashSayi += 1
             cameraBaslat()
         }
     }
 
-    fun cameraFrontBack_btn(){
-        kameraSayi = 2
+    fun kameraDegistir(){
         requireActivity().changeCamera_btn_id.setOnClickListener {
-            kameraSayi = kameraSayi!! + 1
+            kameraSayi += 1
             cameraBaslat()
         }
     }
@@ -133,8 +143,8 @@ class camera : Fragment() {
     override fun onResume() {
         super.onResume()
         cameraBaslat()
-        flashOnOff_btn()
-        cameraFrontBack_btn()
+        fotocek()
+        kameraDegistir()
+        flashAcKapat()
     }
-
 }
