@@ -14,5 +14,4 @@
 => [CameraX](https://developer.android.com/training/camerax) library used
 
 # Screenshot
-![İmages 1](https://github.com/onermorkoc/Camera/blob/main/images/images%20(1).jpg)
-![İmages 2](https://github.com/onermorkoc/Camera/blob/main/images/images%20(2).jpg)
+<img src="https://github.com/onermorkoc/Camera/blob/main/images/images%20(1).jpg" width="200"> <img src="https://github.com/onermorkoc/Camera/blob/main/images/images%20(2).jpg" width="200">
