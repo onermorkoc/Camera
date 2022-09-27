@@ -14,7 +14,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun adapter(){
-        val adapter = viewpaper2_adapter(supportFragmentManager, lifecycle)
+        val adapter = ViewPaper2Adapter(supportFragmentManager, lifecycle)
         viewpaper2_id.adapter = adapter
         TabLayoutMediator(tabLayout_id,viewpaper2_id){tab,possedion->
             when(possedion){

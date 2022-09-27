@@ -4,7 +4,7 @@
     android:viewportWidth="24"
     android:viewportHeight="24">
   <path
-      android:fillColor="@color/tabCizgiRenk"
+      android:fillColor="@color/blue"
       android:pathData="M9,12c0,1.66 1.34,3 3,3s3,-1.34 3,-3s-1.34,-3 -3,-3S9,10.34 9,12z"/>
   <path
       android:fillColor="@color/white"

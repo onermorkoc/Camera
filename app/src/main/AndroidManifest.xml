@@ -17,7 +17,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CameraApp">
         <activity
-            android:name=".acilisEkran"
+            android:name=".SplashScreen"
             android:screenOrientation="locked"
             android:exported="true">
             <intent-filter>

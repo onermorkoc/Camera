@@ -5,7 +5,8 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
 
-class viewpaper2_adapter(fragmentManager: FragmentManager, lifecycle: Lifecycle) : FragmentStateAdapter(fragmentManager, lifecycle){
+class ViewPaper2Adapter(fragmentManager: FragmentManager, lifecycle: Lifecycle) : FragmentStateAdapter(fragmentManager, lifecycle){
+
     override fun getItemCount(): Int {
         return 2
     }
@@ -14,10 +15,10 @@ class viewpaper2_adapter(fragmentManager: FragmentManager, lifecycle: Lifecycle)
         return when(position){
 
             0->{
-                camera()
+                Camera()
             }
             1->{
-                video()
+                Video()
             }
             else ->{
                 Fragment()
